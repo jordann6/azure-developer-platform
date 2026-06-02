@@ -1,0 +1,44 @@
+# Composition for XStorageAccount: every self-service account is hardened by
+# default with TLS1_2 minimum, HTTPS-only, public blob access disabled, and
+# infrastructure encryption on. The developer cannot opt out.
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xstorageaccounts.platform.jordann6.io
+spec:
+  compositeTypeRef:
+    apiVersion: platform.jordann6.io/v1alpha1
+    kind: XStorageAccount
+  mode: Pipeline
+  pipeline:
+    - step: patch-and-transform
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: account
+            base:
+              apiVersion: storage.azure.upbound.io/v1beta1
+              kind: Account
+              spec:
+                forProvider:
+                  resourceGroupName: rg-adp-az-workloads
+                  location: eastus
+                  accountTier: Standard
+                  accountReplicationType: LRS
+                  minTlsVersion: TLS1_2
+                  httpsTrafficOnlyEnabled: true
+                  allowNestedItemsToBePublic: false
+                  infrastructureEncryptionEnabled: true
+                  tags:
+                    managed-by: crossplane
+            patches:
+              - fromFieldPath: spec.parameters.name
+                toFieldPath: metadata.annotations[crossplane.io/external-name]
+              - fromFieldPath: spec.parameters.team
+                toFieldPath: spec.forProvider.tags.team
+              - type: ToCompositeFieldPath
+                fromFieldPath: metadata.annotations[crossplane.io/external-name]
+                toFieldPath: status.accountName

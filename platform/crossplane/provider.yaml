@@ -1,0 +1,39 @@
+# Crossplane Azure storage provider authenticated via Azure Workload Identity.
+# The DeploymentRuntimeConfig pins the provider ServiceAccount to "provider-azure"
+# (matched by the federated credential in Terraform), annotates it with the
+# user-assigned identity's client ID, and labels the pod so the workload-identity
+# webhook injects a federated token. No client secrets anywhere.
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-azure-wi
+spec:
+  serviceAccountTemplate:
+    metadata:
+      name: provider-azure
+      annotations:
+        azure.workload.identity/client-id: 9d2e2f9b-d5fb-4b7b-8b2d-8d7a25b6fd6f
+  deploymentTemplate:
+    spec:
+      selector: {}
+      template:
+        metadata:
+          labels:
+            azure.workload.identity/use: "true"
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-azure-storage
+spec:
+  package: xpkg.upbound.io/upbound/provider-azure-storage:v1.11.0
+  runtimeConfigRef:
+    name: provider-azure-wi
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Function
+metadata:
+  name: function-patch-and-transform
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.7.0

@@ -1,0 +1,14 @@
+# Example self-service request. A developer commits something like this (or uses
+# the Backstage golden-path template) and the platform provisions a hardened
+# Azure Storage account. Apply manually to demo:
+#   kubectl create namespace team-apps
+#   kubectl apply -f examples/storageaccount-claim.yaml
+apiVersion: platform.jordann6.io/v1alpha1
+kind: StorageAccount
+metadata:
+  name: demo-storage
+  namespace: team-apps
+spec:
+  parameters:
+    name: adpdemostore6271
+    team: payments

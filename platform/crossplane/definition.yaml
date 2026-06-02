@@ -1,0 +1,46 @@
+# Self-service API: a developer creates a namespaced StorageAccount claim with a
+# globally-unique name and an owning team; the platform composes a hardened
+# Azure Storage account.
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xstorageaccounts.platform.jordann6.io
+spec:
+  group: platform.jordann6.io
+  names:
+    kind: XStorageAccount
+    plural: xstorageaccounts
+  claimNames:
+    kind: StorageAccount
+    plural: storageaccounts
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Globally-unique storage account name (3-24 lowercase alphanumeric).
+                      pattern: "^[a-z0-9]{3,24}$"
+                    team:
+                      type: string
+                      description: Owning team, applied as a tag.
+                  required:
+                    - name
+                    - team
+              required:
+                - parameters
+            status:
+              type: object
+              properties:
+                accountName:
+                  type: string

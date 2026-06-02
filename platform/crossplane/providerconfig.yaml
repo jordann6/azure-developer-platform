@@ -1,0 +1,12 @@
+# ProviderConfig consumed by every managed resource. OIDCTokenFile source means
+# the provider exchanges the injected federated token for Azure credentials.
+apiVersion: azure.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  credentials:
+    source: OIDCTokenFile
+  subscriptionID: 9c644a73-5dc1-4bfe-9e90-91865014cdd2
+  tenantID: aadc8a10-9847-4913-974f-5eb9b71ea176
+  clientID: 9d2e2f9b-d5fb-4b7b-8b2d-8d7a25b6fd6f
