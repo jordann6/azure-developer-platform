@@ -1,6 +1,6 @@
 # Azure Developer Platform
 
-[![Validate](https://github.com/jordann6/azure-developer-platform/actions/workflows/validate.yml/badge.svg)](https://github.com/jordann6/azure-developer-platform/actions/workflows/validate.yml)
+[![Security Gate](https://github.com/jordann6/azure-developer-platform/actions/workflows/security-gate.yml/badge.svg)](https://github.com/jordann6/azure-developer-platform/actions/workflows/security-gate.yml)
 
 An Internal Developer Platform on AKS that gives application teams a paved road: self-service infrastructure, GitOps delivery, golden-path scaffolding, and policy guardrails. It is the Azure counterpart to [aws-developer-platform](https://github.com/jordann6/aws-developer-platform), built deliberately on a different toolchain to show the pattern is not cloud or tool specific.
 
